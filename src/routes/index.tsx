@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
+import LoginWithXButton from "#/components/LoginWithXButton";
 import {
 	Check,
 	Download,
@@ -10,21 +11,8 @@ import {
 } from "lucide-react";
 import "lenis/dist/lenis.css";
 import { ReactLenis } from "lenis/react";
-import {
-	SignedIn,
-	UserButton,
-	SignedOut,
-	SignInButton,
-	SignUpButton,
-} from "@clerk/tanstack-react-start";
 
 export const Route = createFileRoute("/")({ component: Home });
-
-const navItems = [
-	{ label: "Features", href: "#features" },
-	{ label: "How it works", href: "#how-it-works" },
-	{ label: "Pricing", href: "#pricing" },
-];
 
 const features = [
 	{
@@ -72,33 +60,6 @@ function Home() {
 	return (
 		<ReactLenis root>
 			<div className="min-h-screen bg-white text-primary">
-				<header className="sticky top-0 z-50 border-b border-primary/10 bg-white/90 backdrop-blur-sm">
-					<nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
-						<div className="text-lg font-semibold tracking-tight">
-							DeleteOldTweets
-						</div>
-
-						<ul className="hidden items-center gap-8 text-sm font-medium md:flex">
-							{navItems.map((item) => (
-								<li key={item.href}>
-									<a
-										className="transition-colors hover:text-primary/70"
-										href={item.href}
-									>
-										{item.label}
-									</a>
-								</li>
-							))}
-						</ul>
-						<SignInButton>
-							<Button>
-								<XLogo />
-								Login with X
-							</Button>
-						</SignInButton>
-					</nav>
-				</header>
-
 				<main>
 					{/* Hero */}
 					<section className="relative overflow-hidden px-4 pb-20 pt-16 sm:px-6">
@@ -118,12 +79,7 @@ function Home() {
 								remove old posts safely with a simple guided flow.
 							</p>
 							<div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-								<SignInButton>
-									<Button>
-										<XLogo />
-										Login with X
-									</Button>
-								</SignInButton>
+								<LoginWithXButton />
 								<a href="#features">
 									<Button
 										variant="outline"
@@ -230,15 +186,12 @@ function Home() {
 									<p className="mt-2 text-primary/70">
 										Full access to search, archive, and delete. No limits.
 									</p>
-									<SignInButton>
-										<Button
-											className="mt-8 w-full sm:w-auto"
-											size="lg"
-										>
-											<XLogo />
-											Get started with X
-										</Button>
-									</SignInButton>
+									<LoginWithXButton
+										className="mt-8 w-full sm:w-auto"
+										size="lg"
+									>
+										Get started with X
+									</LoginWithXButton>
 								</div>
 
 								<ul className="mt-10 space-y-3 border-t border-primary/10 pt-8">
@@ -283,107 +236,16 @@ function Home() {
 									Connect your X account and remove old or offensive tweets in
 									minutes.
 								</p>
-								<SignInButton>
-									<Button
-										size="lg"
-										variant="secondary"
-										className="mt-8 bg-white text-primary hover:bg-white/90"
-									>
-										<XLogo />
-										Login with X
-									</Button>
-								</SignInButton>
+								<LoginWithXButton
+									size="lg"
+									variant="secondary"
+									className="mt-8 bg-white text-primary hover:bg-white/90"
+								/>
 							</div>
 						</div>
 					</section>
 				</main>
-
-				<footer className="border-t border-primary/10 bg-primary text-primary-foreground">
-					<div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
-						<div>
-							<p className="text-lg font-semibold">DeleteOldTweets</p>
-							<p className="mt-3 max-w-xs text-sm text-primary-foreground/70">
-								Simple tweet cleanup tools to help you keep your profile fresh.
-							</p>
-						</div>
-
-						<div>
-							<p className="text-sm font-semibold text-primary-foreground/90">
-								Explore
-							</p>
-							<ul className="mt-3 space-y-2 text-sm text-primary-foreground/70">
-								<li>
-									<a
-										className="hover:text-primary-foreground"
-										href="#features"
-									>
-										Features
-									</a>
-								</li>
-								<li>
-									<a
-										className="hover:text-primary-foreground"
-										href="#how-it-works"
-									>
-										How it works
-									</a>
-								</li>
-								<li>
-									<a
-										className="hover:text-primary-foreground"
-										href="#pricing"
-									>
-										Pricing
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<p className="text-sm font-semibold text-primary-foreground/90">
-								Legal
-							</p>
-							<ul className="mt-3 space-y-2 text-sm text-primary-foreground/70">
-								<li>
-									<a
-										className="hover:text-primary-foreground"
-										href="/privacy"
-									>
-										Privacy Policy
-									</a>
-								</li>
-								<li>
-									<a
-										className="hover:text-primary-foreground"
-										href="/terms"
-									>
-										Terms of Service
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div className="border-t border-primary-foreground/10">
-						<div className="mx-auto w-full max-w-6xl px-4 py-4 text-xs text-primary-foreground/60 sm:px-6">
-							© {new Date().getFullYear()} DeleteOldTweets. All rights reserved.
-						</div>
-					</div>
-				</footer>
 			</div>
 		</ReactLenis>
-	);
-}
-
-function XLogo() {
-	return (
-		<svg
-			viewBox="0 0 1200 1227"
-			fill="currentColor"
-			role="img"
-			className="size-4"
-			aria-hidden="true"
-		>
-			<path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
-		</svg>
 	);
 }

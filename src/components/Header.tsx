@@ -1,10 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import ThemeToggle from "./ThemeToggle";
+import Navbar from "./Navbar";
 
 export default function Header() {
-	return (
-		<header>
-			<nav></nav>
-		</header>
-	);
+	return <Navbar />;
 }
