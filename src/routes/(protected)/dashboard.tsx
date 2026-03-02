@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { useAuthStore } from "#/stores/auth-store";
-import { requireAuth } from "./route";
 
 const Dashboard = () => {
 	const user = useAuthStore((state) => state.user);
@@ -11,7 +10,7 @@ const Dashboard = () => {
 	const isLoading = useAuthStore((state) => state.isLoading);
 
 	return (
-		<main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 flex-1">
+		<main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
 			<h1 className="text-2xl font-bold tracking-tight text-primary">
 				Dashboard
 			</h1>
@@ -47,6 +46,5 @@ const Dashboard = () => {
 };
 
 export const Route = createFileRoute("/(protected)/dashboard")({
-	beforeLoad: requireAuth,
 	component: Dashboard,
 });

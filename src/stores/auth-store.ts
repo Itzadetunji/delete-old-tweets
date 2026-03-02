@@ -33,7 +33,7 @@ const getOAuthTokensFromSession = (session: Session | null) => {
 		oauthToken: providerTokenSession.provider_token ?? null,
 		oauthRefreshToken: providerTokenSession.provider_refresh_token ?? null,
 	};
-}
+};
 
 export const useAuthStore = create<AuthStore>()(
 	persist(
@@ -46,14 +46,16 @@ export const useAuthStore = create<AuthStore>()(
 			error: null,
 			hasInitialized: false,
 			initialize: async () => {
-				if (get().hasInitialized) {
+				if (get().hasInitialized || get().isLoading) {
 					return;
 				}
 
-				set({ hasInitialized: true });
+				set({ isLoading: true });
 
 				if (!supabase) {
 					set({
+						hasInitialized: true,
+						isLoading: false,
 						error:
 							"Missing Supabase env vars. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
 					});
@@ -64,11 +66,13 @@ export const useAuthStore = create<AuthStore>()(
 				if (error) {
 					set({ error: error.message });
 				} else {
-					const oauthTokens = getOAuthTokensFromSession(data.session);
+					const persistedSession = get().session;
+					const resolvedSession = data.session ?? persistedSession;
+					const oauthTokens = getOAuthTokensFromSession(resolvedSession);
 
 					set({
-						session: data.session,
-						user: data.session?.user ?? null,
+						session: resolvedSession,
+						user: resolvedSession?.user ?? null,
 						...oauthTokens,
 						error: null,
 					});
@@ -78,6 +82,7 @@ export const useAuthStore = create<AuthStore>()(
 					const oauthTokens = getOAuthTokensFromSession(session);
 
 					set({
+						hasInitialized: true,
 						session,
 						user: session?.user ?? null,
 						...oauthTokens,
@@ -85,6 +90,8 @@ export const useAuthStore = create<AuthStore>()(
 						error: null,
 					});
 				});
+
+				set({ hasInitialized: true, isLoading: false });
 			},
 			signInWithX: async () => {
 				if (!supabase) {
@@ -97,16 +104,12 @@ export const useAuthStore = create<AuthStore>()(
 
 				set({ isLoading: true, error: null });
 
-				const redirectTo =
-					typeof window !== "undefined"
-						? `${window.location.origin}/dashboard`
-						: undefined;
+				
 
 				const { data, error } = await supabase.auth.signInWithOAuth({
 					provider: "x",
 					options: {
-						redirectTo,
-						skipBrowserRedirect: true,
+						redirectTo: "http://localhost:3000/dashboard",
 					},
 				});
 

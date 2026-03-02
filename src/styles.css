@@ -195,7 +195,7 @@ html,
     @apply border-border outline-primary/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply justify-between text-foreground;
   }
   input,
   textarea {

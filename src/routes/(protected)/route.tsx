@@ -1,24 +1,14 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { useAuthStore } from "#/stores/auth-store";
-
-export const requireAuth = async () => {
-	const auth = useAuthStore.getState();
-
-	if (!auth.hasInitialized) {
-		await auth.initialize();
-	}
-
-	const { session } = useAuthStore.getState();
-
-	if (!session) {
-		throw redirect({ to: "/" });
-	}
-};
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import AuthGuard from "#/components/AuthGuard";
 
 const ProtectedRouteLayout = () => {
-	return <Outlet />;
+	return (
+		<AuthGuard>
+			<Outlet />
+		</AuthGuard>
+	);
 };
 
-export const Route = createFileRoute("/protected" as never)({
+export const Route = createFileRoute("/(protected)" as never)({
 	component: ProtectedRouteLayout,
 });
