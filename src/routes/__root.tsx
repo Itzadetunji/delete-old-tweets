@@ -1,13 +1,17 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+	createRootRoute,
+	HeadContent,
+	Link,
+	Scripts,
+	useRouterState,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useAuthStore } from "../stores/auth-store";
 import appCss from "../styles.css?url";
-
-const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'auto';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);if(mode==='auto'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',mode)}root.style.colorScheme=resolved;}catch(e){}})();`;
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -31,10 +35,34 @@ export const Route = createRootRoute({
 		],
 	}),
 	shellComponent: RootDocument,
+	notFoundComponent: RootNotFound,
 });
+
+function RootNotFound() {
+	return (
+		<main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-16 text-center sm:px-6">
+			<h1 className="text-3xl font-semibold tracking-tight text-primary">
+				Page not found
+			</h1>
+			<p className="mt-3 text-sm text-primary/70">
+				The page you are looking for doesn&apos;t exist.
+			</p>
+			<Link
+				to="/"
+				className="mt-6 inline-flex rounded-md border border-primary/20 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
+			>
+				Go home
+			</Link>
+		</main>
+	);
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	const initializeAuth = useAuthStore((state) => state.initialize);
+	const pathname = useRouterState({
+		select: (state) => state.location.pathname,
+	});
+	const hideGlobalChrome = pathname === "/dashboard";
 
 	useEffect(() => {
 		void initializeAuth();
@@ -46,13 +74,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			suppressHydrationWarning
 		>
 			<head>
-				<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased flex flex-col min-h-dvh wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
-				<Header />
+				{hideGlobalChrome ? null : <Header />}
 				<div className="flex flex-col flex-1">{children}</div>
-				<Footer />
+				{hideGlobalChrome ? null : <Footer />}
 
 				<TanStackDevtools
 					config={{

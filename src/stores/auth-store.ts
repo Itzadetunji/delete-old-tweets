@@ -6,8 +6,6 @@ import { supabase } from "#/lib/supabase";
 type AuthStore = {
 	user: User | null;
 	session: Session | null;
-	oauthToken: string | null;
-	oauthRefreshToken: string | null;
 	isLoading: boolean;
 	error: string | null;
 	hasInitialized: boolean;
@@ -104,8 +102,6 @@ export const useAuthStore = create<AuthStore>()(
 
 				set({ isLoading: true, error: null });
 
-				
-
 				const { data, error } = await supabase.auth.signInWithOAuth({
 					provider: "x",
 					options: {
@@ -123,7 +119,10 @@ export const useAuthStore = create<AuthStore>()(
 					return;
 				}
 
-				set({ isLoading: false, error: "Unable to start X authentication flow." });
+				set({
+					isLoading: false,
+					error: "Unable to start X authentication flow.",
+				});
 			},
 			signOut: async () => {
 				if (!supabase) {
@@ -141,8 +140,7 @@ export const useAuthStore = create<AuthStore>()(
 				set({
 					user: null,
 					session: null,
-					oauthToken: null,
-					oauthRefreshToken: null,
+
 					isLoading: false,
 					error: null,
 				});
@@ -154,8 +152,6 @@ export const useAuthStore = create<AuthStore>()(
 			partialize: (state) => ({
 				user: state.user,
 				session: state.session,
-				oauthToken: state.oauthToken,
-				oauthRefreshToken: state.oauthRefreshToken,
 			}),
 		},
 	),
