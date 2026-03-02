@@ -59,7 +59,7 @@ const steps = [
 function Home() {
 	return (
 		<ReactLenis root>
-			<div className="min-h-screen bg-white text-primary">
+			<div className="bg-white text-primary">
 				<main>
 					{/* Hero */}
 					<section className="relative overflow-hidden px-4 pb-20 pt-16 sm:px-6">

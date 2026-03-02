@@ -10,7 +10,7 @@ export const Route = createFileRoute("/privacy")({
 function PrivacyPage() {
 	return (
 		<ReactLenis root>
-			<div className="min-h-screen bg-white text-primary overflow-x-hidden">
+			<div className="bg-white text-primary overflow-x-hidden">
 				{/* Header Section */}
 				<section className="pt-16 pb-12 px-4 sm:px-6">
 					<div className="max-w-4xl mx-auto text-center">

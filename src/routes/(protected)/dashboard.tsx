@@ -11,7 +11,7 @@ const Dashboard = () => {
 	const isLoading = useAuthStore((state) => state.isLoading);
 
 	return (
-		<main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
+		<main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 flex-1">
 			<h1 className="text-2xl font-bold tracking-tight text-primary">
 				Dashboard
 			</h1>

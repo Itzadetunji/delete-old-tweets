@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 export default function Footer() {
 	return (
-		<footer className="border-t border-primary/10 bg-primary text-primary-foreground">
+		<footer className="border-t border-primary/10 bg-primary text-primary-foreground self-end">
 			<div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
 				<div>
 					<p className="text-lg font-semibold">DeleteOldTweets</p>
