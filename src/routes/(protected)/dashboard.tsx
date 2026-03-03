@@ -4,6 +4,7 @@ import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { Input } from "#/components/ui/input";
 import { searchMyPostsServerFn } from "../../server/dashboard/search";
+import { BadWordsRemove } from "../../server/dashboard/bad-words-remove";
 import { useAuthStore } from "#/stores/auth-store";
 
 const getXUsername = (
@@ -32,6 +33,7 @@ const Dashboard = () => {
 	const [query, setQuery] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [isSearching, setIsSearching] = useState(false);
+	const [searchMode, setSearchMode] = useState<"manual" | "badWords">("manual");
 	const [results, setResults] = useState<{
 		posts: Array<{
 			id: string;
@@ -50,6 +52,7 @@ const Dashboard = () => {
 		}
 
 		setIsSearching(true);
+		setSearchMode("manual");
 		setError(null);
 
 		try {
@@ -57,6 +60,50 @@ const Dashboard = () => {
 				data: {
 					username,
 					query,
+					nextToken,
+				},
+			});
+
+			if (!response.success) {
+				setError(response.message);
+				return;
+			}
+
+			setResults((current) => {
+				if (!nextToken || !current) {
+					return response;
+				}
+
+				return {
+					...response,
+					posts: [...current.posts, ...response.posts],
+				};
+			});
+		} catch (searchError) {
+			setError(
+				searchError instanceof Error
+					? searchError.message
+					: "Unable to search posts right now.",
+			);
+		} finally {
+			setIsSearching(false);
+		}
+	};
+
+	const runBadWordsSearch = async (nextToken?: string) => {
+		if (!username) {
+			setError("Unable to resolve your X username from the current session.");
+			return;
+		}
+
+		setIsSearching(true);
+		setSearchMode("badWords");
+		setError(null);
+
+		try {
+			const response = await BadWordsRemove({
+				data: {
+					username,
 					nextToken,
 				},
 			});
@@ -118,6 +165,16 @@ const Dashboard = () => {
 						>
 							{isSearching ? "Searching..." : "Search"}
 						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => {
+								void runBadWordsSearch();
+							}}
+							disabled={isSearching}
+						>
+							{isSearching ? "Searching..." : "Find bad posts"}
+						</Button>
 					</form>
 
 					<p className="text-xs text-primary/60">
@@ -162,6 +219,11 @@ const Dashboard = () => {
 								<Button
 									variant="outline"
 									onClick={() => {
+										if (searchMode === "badWords") {
+											void runBadWordsSearch(results.nextToken ?? undefined);
+											return;
+										}
+
 										void runSearch(results.nextToken ?? undefined);
 									}}
 									disabled={isSearching}
